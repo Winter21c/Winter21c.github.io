@@ -130,6 +130,26 @@ async function fetchSong(id) {
   }
 }
 
+/**
+ * 读取已入库的歌单作为「基线」。
+ *
+ * 为什么需要：网易云的外链接口有地域限制。GitHub Actions 跑在美国 IP，
+ * 部分歌曲（尤其国内版权曲）会返回 text/html 而拿不到音频；
+ * 而在国内网络下构建则一切正常。
+ * 若不做回退，CI 构建会把本地烘焙好的可用歌单覆盖成残缺版本。
+ */
+function readBaseline(outPath) {
+  try {
+    const data = JSON.parse(readFileSync(outPath, 'utf8'));
+    if (!Array.isArray(data)) return new Map();
+    const usable = data.filter((s) => s && s.id && s.url && !s.error);
+    console.log(`[music] 发现基线歌单，可用 ${usable.length} 首`);
+    return new Map(usable.map((s) => [String(s.id), s]));
+  } catch {
+    return new Map();
+  }
+}
+
 async function main() {
   const ids = readSongIds();
   const outPath = join(root, 'public', 'music-data.json');
@@ -141,23 +161,37 @@ async function main() {
     return;
   }
 
+  const baseline = readBaseline(outPath);
+
   console.log(`[music] 开始烘焙 ${ids.length} 首歌...`);
-  const results = await Promise.all(ids.map(fetchSong));
+  const fetched = await Promise.all(ids.map(fetchSong));
+
+  // 抓取失败时回退到基线，避免因地域限制丢失本来可用的歌曲
+  const results = fetched.map((r) => {
+    if (!r.error && r.url) return r;
+    const cached = baseline.get(String(r.id));
+    if (cached) {
+      console.log(`[music] ♻️  ${r.id} 实时抓取失败，沿用基线数据：${cached.name} — ${cached.artist}`);
+      return cached;
+    }
+    return r;
+  });
 
   const ok = results.filter((r) => !r.error && r.url);
   const failed = results.length - ok.length;
 
   writeFileSync(outPath, JSON.stringify(results, null, 2) + '\n');
-  console.log(`[music] ✅ 成功 ${ok.length} 首${failed ? `，失败 ${failed} 首` : ''} → public/music-data.json`);
+  console.log(
+    `[music] ${ok.length > 0 ? '✅' : '⚠️ '} 可用 ${ok.length} 首${failed ? `，缺失 ${failed} 首` : ''} → public/music-data.json`,
+  );
   for (const s of ok) console.log(`         · ${s.name} — ${s.artist}`);
+  for (const s of results.filter((r) => r.error)) {
+    console.warn(`         ✗ ${s.id}：${s.error}`);
+  }
 }
 
 // 关键：构建绝不能因为歌单抓取失败而中断
 main().catch((err) => {
-  console.warn('[music] 烘焙过程出现异常，写入空歌单以保证构建继续:', err.message);
-  try {
-    writeFileSync(join(root, 'public', 'music-data.json'), '[]\n');
-  } catch {
-    /* ignore */
-  }
+  console.warn('[music] 烘焙过程出现异常，保留已有歌单以保证构建继续:', err.message);
+  // 注意：这里刻意「不」写入空歌单，否则一次网络抖动就会清空线上可用的歌单
 });

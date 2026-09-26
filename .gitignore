@@ -40,5 +40,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# 构建期生成（由 scripts/fetch-music.mjs 产出，不入库）
-/public/music-data.json
+# 注意：public/music-data.json 需要入库！
+# 它是「基线歌单」——网易云外链有地域限制，CI（美国 IP）抓不全，
+# 构建脚本会在实时抓取失败时回退到这份基线，避免线上歌单被清空。
