@@ -48,12 +48,15 @@ export default function ProfileCard({ postCount, chatterCount, photoCount }: { p
         </div>
 
         <div className="flex gap-2 md:gap-3 flex-wrap justify-center md:justify-end w-full md:w-auto" onClick={(e) => e.stopPropagation()}>
-          <SocialBtn type="github" url={siteConfig.social?.github} />
-          <SocialBtn type="gitee" url={siteConfig.social?.gitee} />
-          <SocialBtn type="google" url={siteConfig.social?.google} />
-          <SocialBtn type="email" onClick={() => copyToClipboard(siteConfig.social?.email || '', '邮箱')} />
-          <SocialBtn type="qq" onClick={() => copyToClipboard(siteConfig.social?.qq || '', 'QQ号')} />
-          <SocialBtn type="wechat" onClick={() => copyToClipboard(siteConfig.social?.wechat || '', '微信号')} />
+          {/* 只渲染 siteConfig.social 里真正填了值的项：
+              留空则对应图标不显示（原代码无条件渲染全部 6 个，
+              即使配置为空也会出现 gitee/google/QQ 等无用图标）。 */}
+          {siteConfig.social?.github && <SocialBtn type="github" url={siteConfig.social.github} />}
+          {siteConfig.social?.gitee && <SocialBtn type="gitee" url={siteConfig.social.gitee} />}
+          {siteConfig.social?.google && <SocialBtn type="google" url={siteConfig.social.google} />}
+          {siteConfig.social?.email && <SocialBtn type="email" onClick={() => copyToClipboard(siteConfig.social!.email!, '邮箱')} />}
+          {siteConfig.social?.qq && <SocialBtn type="qq" onClick={() => copyToClipboard(siteConfig.social!.qq!, 'QQ号')} />}
+          {siteConfig.social?.wechat && <SocialBtn type="wechat" onClick={() => copyToClipboard(siteConfig.social!.wechat!, '微信号')} />}
         </div>
       </div>
     </div>

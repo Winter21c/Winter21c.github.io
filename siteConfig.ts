@@ -22,13 +22,15 @@ export const siteConfig = {
   avatarUrl: "https://github.com/Winter21c.png", // 【请修改】
 
   // 3. 网站背景设置
-  // useGradient: true  → 使用 themeColors 的呼吸流动渐变（默认，零外部依赖，最稳）
+  // useGradient: true  → 使用 themeColors 的呼吸流动渐变（零外部依赖）
   // useGradient: false → 使用 bgImages 里的图片轮播
-  useGradient: true,
+  useGradient: false,
   themeColors: ["#a18cd1", "#fbc2eb", "#a1c4fd", "#c2e9fb"],
-  // 【请修改】想用图片背景时，把下面的地址换成你自己的图片，并把 useGradient 改为 false
+  // 自定义壁纸：把图片放进 public/ 后写 "/文件名"。
+  // 当前这张由你本机的 PNG 转成 WebP（1920x1080，2.0MB → 149KB）。
+  // 放多张会每 10 秒自动轮播切换。
   bgImages: [
-    "https://github.com/Winter21c.png",
+    "/background.webp",
   ],
 
   // 4. 文章默认封面图（Markdown 没写 cover 时显示）【请修改】
@@ -47,7 +49,8 @@ export const siteConfig = {
     "2111476579", // 恋人 — 刘嘉星（李荣浩版是 VIP，放不了）
   ],
 
-  // 7. 社交联系方式（留空则不显示对应图标）【请修改】
+  // 7. 社交联系方式：**留空即不显示该图标**（首页与文章页均生效）
+  //    目前只保留 GitHub，其余已按要求清空。
   social: {
     github: "https://github.com/Winter21c",
     gitee: "",
