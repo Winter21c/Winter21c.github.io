@@ -42,7 +42,9 @@ function getDirActivities(dirName: string, typeLabel: '文章' | '杂谈' | '说
 export default async function AboutPage() {
   const fullPath = path.join(process.cwd(), 'app', 'about', 'about.md');
   let contentHtml = "博主很懒，还没有写自我介绍哦...";
-  let coverImage = "https://bu.dusays.com/2026/03/24/69c23dc278c78.jpg";
+  // 默认封面留空：原代码写死了原作者的图床直链。
+  // 留空时 AboutClient 会退回渐变底色，不会出现破图。
+  let coverImage = "";
 
   try {
     const fileContents = fs.readFileSync(fullPath, 'utf8');

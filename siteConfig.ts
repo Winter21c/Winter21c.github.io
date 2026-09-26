@@ -5,16 +5,18 @@
 
 export const siteConfig = {
   // 1. 网站标题与博主信息
-  title: "Winter21c の 宝藏之地", // 【请修改】浏览器标签页标题
+  title: "不完美笔记", // 【请修改】浏览器标签页标题
   faviconUrl: "https://github.com/Winter21c.png", // 【请修改】站点图标
   authorName: "Winter21c", // 【请修改】你的昵称
   bio: "这里写一句自我介绍。", // 【请修改】首页个人简介
 
-  navTitle: "Winter21c", // 【请修改】导航栏左侧显示的短名
+  navTitle: "不完美笔记", // 【请修改】导航栏左侧显示的短名
 
-  // 导航栏中间的后缀/分隔符，最终显示为：navTitle + navSuffix + navAfter
-  navSuffix: "の",
-  navAfter: "宝藏之地", // 【请修改】
+  // 导航栏标题的拼装方式：navTitle + navSuffix + navAfter
+  // 留空则对应部分不显示（例如现在整条只显示「不完美笔记」）。
+  // 想恢复成 "A の B" 这种样式，就把 navSuffix 设为 "の"、navAfter 设为后半段。
+  navSuffix: "",
+  navAfter: "",
 
   // 2. 头像设置（支持网络链接；也可把图片放进 public/ 后用 "/me.jpg"）
   avatarUrl: "https://github.com/Winter21c.png", // 【请修改】

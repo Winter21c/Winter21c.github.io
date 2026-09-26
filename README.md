@@ -1,4 +1,4 @@
-# Winter21c の 宝藏之地
+# 不完美笔记
 
 个人博客 / 主页，基于 Next.js 静态导出，托管在 **GitHub Pages**。
 
@@ -6,13 +6,26 @@
 
 ---
 
-## 🙏 来源与署名
+## 🙏 特别致谢
 
-本项目的视觉与功能设计来自开源项目 **[XinghuisamaBlogs](https://github.com/heiehiehi/XinghuisamaBlogs)**（作者：XingHuiSama），
-采用 **[CC BY-NC 4.0](LICENSE)** 许可协议：允许学习、分享与二次修改，**二次发布需提及原作者，禁止任何商业用途**。
+**这个站点能跑起来，首先要感谢原项目作者 [XingHuiSama](https://github.com/heiehiehi)。**
 
-本仓库是在其基础上的 **GitHub Pages 适配改造版**，主要改动见下一节。
-原项目是为 Vercel 设计的，请一并给原作者点个 Star ⭐。
+本项目的全部视觉设计与功能实现——毛玻璃（Glassmorphism）风格、动态背景、
+音乐播放器、时间线、照片墙、3D 结晶工坊等等——都出自 TA 的开源项目
+**[XinghuisamaBlogs](https://github.com/heiehiehi/XinghuisamaBlogs)**。
+
+我只是把它从 Vercel 搬到了 GitHub Pages 上（原项目依赖服务端，静态托管跑不起来），
+做了一些静态化适配和清理工作。**真正的创意和绝大部分代码都是原作者的功劳。**
+
+如果你也喜欢这个风格，请务必去原仓库点一个 ⭐ Star 支持 TA：
+
+👉 <https://github.com/heiehiehi/XinghuisamaBlogs>
+
+原项目采用 **[CC BY-NC 4.0](LICENSE)** 许可协议：
+允许学习、分享与二次修改，**二次发布需提及原作者，禁止任何商业用途**。
+
+> 本仓库中原作者的个人内容（文章、关于页、相册、友链、备案号、联系方式、
+> 图床直链等）均已移除或替换，仅保留框架与设计。
 
 ---
 

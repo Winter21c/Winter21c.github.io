@@ -127,7 +127,12 @@ export default function AboutClient({
     <div className="bg-white/60 dark:bg-slate-800/50 backdrop-blur-xl rounded-[40px] shadow-2xl border border-white/40 dark:border-white/10 overflow-hidden transition-colors duration-700 relative">
 
       <div className="w-full h-40 sm:h-48 md:h-64 relative bg-slate-200 dark:bg-slate-700 overflow-hidden group">
-        <img src={coverImage} alt="About Hero" className="w-full h-full object-cover opacity-90 transition-transform duration-1000 group-hover:scale-105" />
+        {coverImage ? (
+          <img src={coverImage} alt="About Hero" className="w-full h-full object-cover opacity-90 transition-transform duration-1000 group-hover:scale-105" />
+        ) : (
+          /* 没设置封面时用主题渐变兜底，避免 <img src=""> 的破图图标 */
+          <div className="w-full h-full bg-gradient-to-br from-indigo-400 via-purple-300 to-sky-300 dark:from-indigo-900 dark:via-purple-900 dark:to-slate-900" />
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent"></div>
       </div>
 
