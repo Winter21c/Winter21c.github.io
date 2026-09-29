@@ -6,7 +6,7 @@ import { BookOpen, MessageSquare, Sparkles, Activity } from 'lucide-react';
 import Comments from './Comments';
 import { siteConfig } from '../siteConfig';
 import Link from 'next/link';
-import { useRouter, useSearchParams, usePathname } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 
 type ActivityRecord = {
   id: string;
@@ -27,10 +27,27 @@ export default function AboutClient({
 }) {
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const activeTab = searchParams.get('tab') || 'intro';
+
+  // ⚠️ 这里原本是 `useSearchParams()`，但它会让 Next.js 放弃对整个页面的静态预渲染，
+  // 结果是关于页的静态 HTML 里只剩一个「正在载入档案...」占位符 ——
+  // 搜索引擎抓不到任何内容，禁用 JS 时更是白屏。
+  // 改成挂载后从 URL 读取 tab：页面能正常预渲染出「自我介绍」的完整内容，
+  // 切换 tab 的交互体验完全不变。
+  const [activeTab, setActiveTab] = useState('intro');
+
+  useEffect(() => {
+    const syncFromUrl = () => {
+      const tab = new URLSearchParams(window.location.search).get('tab');
+      setActiveTab(tab || 'intro');
+    };
+    syncFromUrl();
+    // 处理浏览器前进/后退
+    window.addEventListener('popstate', syncFromUrl);
+    return () => window.removeEventListener('popstate', syncFromUrl);
+  }, []);
 
   const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
     router.push(`${pathname}?tab=${tab}`, { scroll: false });
   };
 
@@ -146,6 +163,12 @@ export default function AboutClient({
           <div className="text-center md:text-left">
             <h1 className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight mb-1 md:mb-3 transition-colors duration-700">关于我</h1>
             <p className="text-sm md:text-lg text-indigo-600 dark:text-indigo-400 font-bold tracking-widest uppercase transition-colors duration-700">Hello World, I'm {siteConfig.authorName}</p>
+            {/* 个人名言 / 签名：在 siteConfig.ts 里改 motto，留空则不显示 */}
+            {siteConfig.motto && (
+              <p className="mt-2 md:mt-4 font-serif italic text-xs md:text-base text-slate-600 dark:text-slate-400 max-w-xl transition-colors duration-700">
+                {siteConfig.motto}
+              </p>
+            )}
           </div>
 
           <div className="flex items-center w-full md:w-auto gap-1 bg-white/50 dark:bg-slate-900/50 p-1 md:p-1.5 rounded-xl md:rounded-2xl shadow-inner border border-white/40 dark:border-white/5">

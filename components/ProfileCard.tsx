@@ -34,6 +34,13 @@ export default function ProfileCard({ postCount, chatterCount, photoCount }: { p
             <p className="text-xs sm:text-sm md:text-base text-slate-700 dark:text-slate-300 font-medium leading-relaxed max-w-md transition-colors duration-700 line-clamp-2 md:line-clamp-none">
               {siteConfig.bio}
             </p>
+
+            {/* 个人名言 / 签名：在 siteConfig.ts 里改 motto，留空则不显示 */}
+            {siteConfig.motto && (
+              <p className="mt-2 md:mt-3 pl-3 border-l-2 border-indigo-400/50 dark:border-indigo-400/40 font-serif italic text-[11px] sm:text-xs md:text-sm text-indigo-700/80 dark:text-indigo-300/80 leading-relaxed max-w-md transition-colors duration-700 line-clamp-2">
+                {siteConfig.motto}
+              </p>
+            )}
           </div>
         </div>
       </div>

@@ -126,8 +126,18 @@ function getRecentPosts(currentSlug: string) {
 
 export default async function Post({ params }: { params: Promise<{ slug: string }> }) {
   const resolvedParams = await params;
-  const postData = await getPostData(resolvedParams.slug);
-  const recentPosts = getRecentPosts(resolvedParams.slug);
+  // ⚠️ 关键修复：文件名含中文（或空格、符号）时，Next.js 传进来的 params.slug
+  // 是 URL 编码后的形式（如 "%E4%B8%AD%E6%96%87"）。直接拿去拼文件路径会
+  // 报 ENOENT 导致整个构建失败。必须先解码还原成真实文件名。
+  // 纯英文文件名解码后不变，所以对老文章没有任何影响。
+  let slug = resolvedParams.slug;
+  try {
+    slug = decodeURIComponent(slug);
+  } catch {
+    /* 解码失败则原样使用 */
+  }
+  const postData = await getPostData(slug);
+  const recentPosts = getRecentPosts(slug);
 
   return (
     <div className="min-h-screen relative pb-20">

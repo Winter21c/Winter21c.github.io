@@ -129,8 +129,16 @@ function generateCalendarMatrix(year: number, month: number, targetDay: number) 
 
 export default async function ChatterDetail({ params }: { params: Promise<{ slug: string }> }) {
   const resolvedParams = await params;
-  const chatterData = await getChatterData(resolvedParams.slug);
-  const recentChatters = getRecentChatters(resolvedParams.slug);
+  // ⚠️ 关键修复：文件名含中文时 params.slug 是 URL 编码形式，
+  // 直接拼路径会 ENOENT 导致构建失败，必须先解码（英文名解码后不变）。
+  let slug = resolvedParams.slug;
+  try {
+    slug = decodeURIComponent(slug);
+  } catch {
+    /* 解码失败则原样使用 */
+  }
+  const chatterData = await getChatterData(slug);
+  const recentChatters = getRecentChatters(slug);
 
   const dateObj = new Date(chatterData.date || '2026-03-24');
   const yearStr = dateObj.getFullYear();
