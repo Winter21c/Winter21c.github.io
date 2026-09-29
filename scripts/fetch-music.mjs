@@ -45,6 +45,24 @@ function readSongIds() {
   }
 }
 
+/**
+ * 读取可选歌名覆盖表。
+ * 网易云的部分标题带冗余后缀（如「别怕变老 (Live))」「xxx(cover)」），
+ * 显示在播放器里不好看，可用 siteConfig 的 cloudMusicTitleOverrides 覆盖。
+ */
+function readTitleOverrides() {
+  try {
+    const src = readFileSync(join(root, 'siteConfig.ts'), 'utf8');
+    const m = src.match(/cloudMusicTitleOverrides\s*:\s*\{([^}]*)\}/);
+    if (!m) return new Map();
+    const pairs = [...m[1].matchAll(/["'`](\d+)["'`]\s*:\s*["'`]([^"'`]+)["'`]/g)];
+    if (pairs.length) console.log(`[music] 应用 ${pairs.length} 条歌名覆盖`);
+    return new Map(pairs.map((x) => [x[1], x[2]]));
+  } catch {
+    return new Map();
+  }
+}
+
 async function fetchJson(url, timeoutMs = 8000) {
   const res = await fetch(url, { headers: NET_EASE_HEADERS, signal: AbortSignal.timeout(timeoutMs) });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -162,6 +180,7 @@ async function main() {
   }
 
   const baseline = readBaseline(outPath);
+  const titleOverrides = readTitleOverrides();
 
   console.log(`[music] 开始烘焙 ${ids.length} 首歌...`);
   const fetched = await Promise.all(ids.map(fetchSong));
@@ -176,6 +195,15 @@ async function main() {
     }
     return r;
   });
+
+  // 应用歌名覆盖（放在最后，保证回退来的歌曲也能被覆盖）
+  for (const r of results) {
+    const override = titleOverrides.get(String(r.id));
+    if (override && r.name !== override) {
+      console.log(`[music] ✏️  ${r.id} 歌名覆盖：${r.name} → ${override}`);
+      r.name = override;
+    }
+  }
 
   const ok = results.filter((r) => !r.error && r.url);
   const failed = results.length - ok.length;
