@@ -131,8 +131,10 @@ export const siteConfig = {
     temperature: 0.85,
   },
 
+  // 友链页「申请友链」区展示的格式，访客可一键复制。
+  // ⚠️ 站点改名后记得同步这里。
   friendLinkApplyFormat:
-    "名称：Winter21c の 宝藏之地\n简介：这里写一句简介\n链接：https://winter21c.github.io\n头像：https://github.com/Winter21c.png",
+    "名称：不完美笔记\n简介：暗处提灯，静处守门；功成不必在我，安宁自在人间\n链接：https://winter21c.github.io\n头像：https://github.com/Winter21c.png",
 
   enableLevelSystem: true, // 等级系统，可在设置里关闭
 };
